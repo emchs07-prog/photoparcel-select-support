@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotoParcel Select サポート</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.8;
+  }
+  h1 { border-bottom: 3px solid #C9A23A; padding-bottom: .4rem; }
+  h2 { margin-top: 2.5rem; color: #C9A23A; }
+  h3 { margin-top: 1.8rem; font-size: 1.05rem; }
+  footer { margin-top: 4rem; font-size: .85rem; opacity: .7; }
+  a { color: #B8892A; }
+  dt { font-weight: bold; margin-top: 1rem; }
+  table { border-collapse: collapse; margin: 1rem 0; width: 100%; }
+  th, td { border: 1px solid rgba(128,128,128,.35); padding: .45rem .7rem; text-align: left; }
+  th { background: rgba(201,162,58,.12); white-space: nowrap; }
+  kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    border: 1px solid rgba(128,128,128,.5); border-bottom-width: 2px;
+    border-radius: 4px; padding: .05rem .35rem; font-size: .9em;
+  }
+</style>
+</head>
+<body>
+<h1>PhotoParcel Select サポート</h1>
+<p>PhotoParcel Select（フォトパーセル セレクト）は、撮影した大量の RAW から採用カットを選び出す作業に特化した macOS / iPadOS アプリです。星の評価は XMP サイドカーとして書き出され、Lightroom Classic にそのまま引き継げます。</p>
+
+<h2>使い方</h2>
+<ol>
+  <li>「フォルダを開く」で、カメラからコピーした写真フォルダを選びます。</li>
+  <li>矢印キー（iPad はタップとスワイプ）で写真を送りながら、<kbd>1</kbd>〜<kbd>5</kbd> で星を付けます。</li>
+  <li>星は自動で <code>写真名.xmp</code> として同じフォルダに書き出されます。</li>
+  <li>Lightroom Classic でそのフォルダを新規カタログに読み込むと、星が反映された状態で開きます。</li>
+</ol>
+<p>読み込み前に XMP を書き出しておくのが前提です。すでに読み込み済みのフォルダに後から書き出した場合は、Lightroom 側で「メタデータ → ファイルからメタデータを読み込む」を実行してください。</p>
+
+<h3>キーボード操作（macOS / iPad + Magic Keyboard 共通）</h3>
+<table>
+  <tr><th>矢印</th><td>写真を送る（1枚表示では上下も1枚ずつ）</td></tr>
+  <tr><th>1〜5</th><td>星を付ける</td></tr>
+  <tr><th>0</th><td>星を消す</td></tr>
+  <tr><th>Shift + 矢印</th><td>範囲を選択する</td></tr>
+  <tr><th>⌘A</th><td>すべて選択（⇧⌘A で解除）</td></tr>
+  <tr><th>⌘Z</th><td>星の変更を取り消す（⇧⌘Z でやり直し）</td></tr>
+  <tr><th>Return</th><td>一覧と1枚表示を切り替える</td></tr>
+  <tr><th>Space</th><td>等倍で表示（macOS は長押し、iPad は押すたび切り替え）</td></tr>
+  <tr><th>Esc</th><td>一覧に戻る</td></tr>
+</table>
+
+<h3>iPad でのタッチ操作</h3>
+<ul>
+  <li>写真をタップして選択、もう一度タップで1枚表示</li>
+  <li>1枚表示では左右スワイプで送り、下スワイプで一覧に戻る</li>
+  <li>ダブルタップで等倍。そのままドラッグして見たい場所へ動かせます</li>
+  <li>長押し、または右上のチェックマークで複数選択に入ります</li>
+</ul>
+
+<h2>よくある質問</h2>
+<dl>
+  <dt>Q. どの RAW 形式に対応していますか？</dt>
+  <dd>A. macOS / iPadOS が対応している形式を読み込めます（Canon CR3・Sony ARW・Nikon NEF など）。OS が知らない機種の RAW は読み込めず、サムネイルに「読み込めません」と表示されます。</dd>
+
+  <dt>Q. 表示が速いのはなぜですか？</dt>
+  <dd>A. RAW の現像を行わず、ファイルに埋め込まれたプレビュー画像を使っているためです。等倍表示のときだけ、必要に応じて画面に映る範囲を現像します。</dd>
+
+  <dt>Q. 等倍表示が実際の画素数より小さいことがあります</dt>
+  <dd>A. 埋め込みプレビューの大きさは機種によって異なります。プレビューが実サイズに足りない場合（Sony ARW など）は自動で RAW 現像に切り替わり、情報バーに「RAW現像」と表示されます。</dd>
+
+  <dt>Q. 写真が書き換えられることはありませんか？</dt>
+  <dd>A. 元の写真ファイルには一切書き込みません。星は隣に置く <code>.xmp</code> ファイルにのみ記録します。すでに XMP がある場合は評価の箇所だけを書き換え、キーワードや現像設定には触れません。</dd>
+
+  <dt>Q. 現像設定は引き継げますか？</dt>
+  <dd>A. 引き継げるのは星の評価だけです。現像設定（crs 情報）は意図的に書き出していません。Lightroom 側で誤って解釈される恐れがあるためです。</dd>
+
+  <dt>Q. iPad で外付け SSD の写真をセレクトできますか？</dt>
+  <dd>A. できます。ファイル App から見えるフォルダであれば選択でき、XMP もそのフォルダに書き出されます。移動中に iPad でセレクトを終えて、帰宅後に Mac の Lightroom へ、という使い方を想定しています。</dd>
+
+  <dt>Q. PhotoParcel との連携とは？</dt>
+  <dd>A. macOS 版では、姉妹アプリ <a href="https://apps.apple.com/jp/app/photoparcel/id6797479444">PhotoParcel</a> がインストールされていると、ツールバーに受け渡しボタンが表示されます。コピー → セレクト → 現像 → 振り分け、という一連の流れを行き来できます。</dd>
+
+  <dt>Q. サブフォルダの中も表示されますか？</dt>
+  <dd>A. 選んだフォルダの直下のみを表示します。カメラから1回分をコピーしたフォルダを開く使い方を想定しています。</dd>
+</dl>
+
+<h2>お問い合わせ</h2>
+<p>不具合のご報告・ご要望は、以下のメールアドレスまでお気軽にご連絡ください。</p>
+<p><a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
+
+<p><a href="privacy.html">プライバシーポリシー</a></p>
+
+<footer>© 2026 Hideki Sato — PhotoParcel Select</footer>
+</body>
+</html>
