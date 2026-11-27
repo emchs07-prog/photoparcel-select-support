@@ -10,25 +10,133 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "PhotoParcel Select", "operatingSystem": "macOS, iOS, iPadOS", "applicationCategory": "UtilitiesApplication", "description": "RAW の写真のセレクトを、キーだけで。付けた星は現像ソフトにそのまま引き継げます。", "url": "https://emchs07-prog.github.io/photoparcel-select-support/", "author": {"@type": "Person", "name": "Hideki Sato", "url": "https://emchs07-prog.github.io/"}, "downloadUrl": "https://apps.apple.com/jp/app/id6800576249"}</script>
 <!-- 検索向けの設定（ここまで） -->
 <style>
-  :root { color-scheme: light dark; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-    max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.8;
+  :root {
+    color-scheme: light dark;
+    --bg:#ffffff; --bg2:#f5f7fb; --card:#ffffff; --text:#14171f; --mute:#5b6475; --line:#e3e7ef;
+    --accent:#e06b1a; --accent2:#d9a514; --code:#0b0d12; --codetext:#e8ecf3; --shadow:0 10px 30px rgba(20,30,60,.08);
   }
-  h1 { border-bottom: 3px solid #C9A23A; padding-bottom: .4rem; }
-  h2 { margin-top: 2.5rem; color: #C9A23A; }
-  h3 { margin-top: 1.8rem; font-size: 1.05rem; }
-  footer { margin-top: 4rem; font-size: .85rem; opacity: .7; }
-  a { color: #B8892A; }
-  dt { font-weight: bold; margin-top: 1rem; }
-  table { border-collapse: collapse; margin: 1rem 0; width: 100%; }
-  th, td { border: 1px solid rgba(128,128,128,.35); padding: .45rem .7rem; text-align: left; }
-  th { background: rgba(201,162,58,.12); white-space: nowrap; }
-  kbd {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    border: 1px solid rgba(128,128,128,.5); border-bottom-width: 2px;
-    border-radius: 4px; padding: .05rem .35rem; font-size: .9em;
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0b0d12; --bg2:#11151d; --card:#151a23; --text:#e9edf5; --mute:#9aa4b6; --line:#232a36;
+            --accent:#ffa45c; --accent2:#ffd25c; --shadow:0 10px 30px rgba(0,0,0,.35); }
   }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:72px; }
+  body { margin:0; background:var(--bg); color:var(--text); line-height:1.8;
+         font-family:-apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+         -webkit-font-smoothing:antialiased; }
+  a { color:var(--accent); }
+  img { max-width:100%; height:auto; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+  /* 上の帯 */
+  .top { position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(14px); -webkit-backdrop-filter:saturate(180%) blur(14px);
+         background:color-mix(in srgb, var(--bg) 82%, transparent); border-bottom:1px solid var(--line); }
+  .top .wrap { display:flex; align-items:center; gap:16px; height:56px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; text-decoration:none; color:var(--text); white-space:nowrap; }
+  .brand img { width:28px; height:28px; border-radius:7px; }
+  .top nav { margin-left:auto; display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  .top nav a { color:var(--mute); text-decoration:none; font-size:.88rem; padding:6px 10px; border-radius:8px; white-space:nowrap; }
+  .top nav a:hover { color:var(--text); background:var(--bg2); }
+  /* 先頭 */
+  .hero { position:relative; overflow:hidden; text-align:center; padding:72px 0 40px; }
+  .hero::before { content:""; position:absolute; inset:-30% -10% auto; height:120%; z-index:-1; filter:blur(20px);
+    background:radial-gradient(40% 45% at 30% 35%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+               radial-gradient(35% 40% at 72% 30%, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 70%); }
+  .hero .icon { width:112px; height:112px; border-radius:25px; box-shadow:var(--shadow); }
+  .hero h1 { font-size:clamp(2.4rem, 6vw, 3.6rem); line-height:1.15; margin:20px 0 4px; letter-spacing:-.01em; font-weight:800; }
+  .hero .yomi { color:var(--mute); font-size:.9rem; margin:0; }
+  .hero .sub { font-size:clamp(1.15rem, 2.6vw, 1.5rem); font-weight:700; margin:14px 0 10px;
+    background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero .lead { max-width:36em; margin:0 auto; color:var(--mute); }
+  .chips { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:20px 0 0; padding:0; list-style:none; }
+  .chips li { font-size:.82rem; font-weight:600; color:var(--mute); border:1px solid var(--line); background:var(--card); border-radius:999px; padding:3px 12px; }
+  .btns { display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:28px 0 0; }
+  .btn { display:inline-flex; align-items:center; gap:8px; font-weight:700; text-decoration:none; border-radius:12px; padding:12px 22px; }
+  .btn.primary { background:var(--text); color:var(--bg); }
+  .btn.ghost { border:1px solid var(--line); color:var(--text); background:var(--card); }
+  .btn:hover { opacity:.88; }
+  .shot-hero { margin:48px auto 0; max-width:960px; }
+  .shot-hero img, .gallery img { display:block; width:100%; border-radius:12px; border:1px solid var(--line); box-shadow:var(--shadow); }
+  .note { max-width:44em; margin:28px auto 0; font-size:.88rem; color:var(--mute); text-align:center; }
+  /* 節 */
+  section.block { padding:64px 0; }
+  section.block.alt { background:var(--bg2); }
+  .eyebrow { display:block; text-align:center; font-size:.78rem; font-weight:700; letter-spacing:.12em; color:var(--accent); margin:0 0 6px; }
+  h2 { text-align:center; font-size:clamp(1.5rem, 3.4vw, 2rem); line-height:1.35; margin:0 0 12px; }
+  .intro { text-align:center; color:var(--mute); max-width:38em; margin:0 auto 36px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px 22px 18px; }
+  .card .ic { display:inline-grid; place-items:center; width:40px; height:40px; border-radius:11px; font-size:1.2rem;
+              background:color-mix(in srgb, var(--accent) 14%, transparent); }
+  .card h3 { font-size:1.06rem; margin:12px 0 6px; line-height:1.5; }
+  .card p { margin:0; color:var(--mute); font-size:.94rem; }
+  .card .tag { display:inline-block; font-size:.72rem; font-weight:700; color:var(--accent2); margin-left:6px; vertical-align:2px; }
+  .codes { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:28px 0 0; padding:0; list-style:none; }
+  .codes li { font-family:Menlo, ui-monospace, monospace; font-size:.85rem; background:var(--code); color:var(--codetext); border-radius:8px; padding:4px 12px; }
+  /* 画面 */
+  .gallery { display:grid; grid-auto-flow:column; grid-auto-columns:min(82%, 720px); gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 4px 16px; }
+  .gallery figure { margin:0; scroll-snap-align:center; }
+  .gallery.phone { grid-auto-columns:min(56%, 240px); }
+  .gallery figcaption { font-size:.88rem; color:var(--mute); margin-top:10px; text-align:center; }
+  .gallery-label { font-weight:700; margin:32px 0 12px; }
+  /* 使い方 */
+  .how { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
+  .how .card h3 { margin-top:0; font-size:1.15rem; }
+  .how ol { margin:0; padding-left:1.3em; }
+  .how li { margin:0 0 8px; }
+  kbd { font-family:-apple-system, sans-serif; font-size:.82em; border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:0 6px; background:var(--bg2); }
+  .md-list { max-width:760px; margin:0 auto; padding-left:1.3em; }
+  .md-list li { margin:0 0 10px; }
+  .for { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; max-width:860px; margin:0 auto; padding:0; list-style:none; }
+  .for li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-weight:600; }
+  .for li::before { content:"✓"; color:var(--accent); margin-right:8px; }
+  /* よくある質問 */
+  .faq { max-width:780px; margin:0 auto; }
+  .faq details { background:var(--card); border:1px solid var(--line); border-radius:14px; margin:0 0 10px; }
+  .faq summary { cursor:pointer; list-style:none; padding:16px 48px 16px 20px; font-weight:700; position:relative; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::after { content:"+"; position:absolute; right:20px; top:50%; transform:translateY(-50%); font-size:1.3rem; color:var(--mute); }
+  .faq details[open] summary::after { content:"−"; }
+  .faq .a { padding:0 20px 16px; color:var(--mute); }
+  .faq .a p { margin:0 0 8px; }
+  /* お問い合わせ */
+  .contact { max-width:640px; margin:0 auto; text-align:center; }
+  .contact .card { padding:28px; }
+  .contact p { margin:0 0 10px; }
+  .other-apps { max-width:780px; margin:0 auto !important; padding:56px 24px 0; }
+  .other-apps h2 { margin-bottom:4px; }
+  .other-apps > p { text-align:center; }
+  .other-apps ul { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:4px 20px; }
+  .other-apps li { line-height:1.5; }
+  footer { text-align:center; color:var(--mute); font-size:.85rem; padding:40px 24px 56px; margin-top:56px; border-top:1px solid var(--line); }
+  @media (max-width:640px) { .top nav { display:none; } .hero { padding-top:48px; } section.block { padding:48px 0; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+  .en { padding-top:24px; }
+  .en-sep { border:0; border-top:1px solid var(--line); margin:64px 0 0; }
+  .en .how { grid-template-columns:1fr; max-width:780px; margin:0 auto; }
+  .keys { display:grid; grid-template-columns:repeat(auto-fill, minmax(420px, 1fr)); gap:16px; align-items:start; }
+  .keys h3 { margin:0 0 10px; font-size:1.05rem; }
+  .keys table { width:100%; border-collapse:collapse; font-size:.92rem; }
+  .keys th { text-align:left; white-space:nowrap; padding:6px 14px 6px 0; vertical-align:top; font-weight:400; }
+  .keys td { padding:6px 0; color:var(--mute); border-bottom:1px solid var(--line); }
+  .keys tr:last-child td { border-bottom:0; }
+  .keys-note { text-align:center; color:var(--mute); font-size:.9rem; margin:20px auto 0; max-width:44em; }
+  @media (max-width:640px) { .keys { grid-template-columns:1fr; } }
+  .notecard { display:block; text-align:left; text-decoration:none; color:var(--text); transition:transform .15s ease; }
+  .notecard:hover { transform:translateY(-2px); }
+  .nc-site { display:inline-block; font-size:.75rem; font-weight:700; color:var(--bg); background:var(--text); border-radius:6px; padding:1px 8px; }
+  .nc-title { display:block; font-weight:700; font-size:1.1rem; line-height:1.5; margin:10px 0 6px; }
+  .nc-lead { display:block; color:var(--mute); font-size:.92rem; }
+  .nc-go { display:block; color:var(--accent); font-weight:700; margin-top:10px; }
+  .detail { display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:16px; align-items:start; }
+  .detail .card h3 { margin-top:0; font-size:1.1rem; }
+  .detail .card > p { color:var(--mute); font-size:.94rem; margin:0 0 8px; }
+  .detail ul { margin:0; padding-left:1.2em; } .detail li { margin:0 0 8px; }
+  .v15 { display:inline-block; font-size:.72rem; font-weight:700; color:#fff; background:var(--accent2); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:3px; }
+  @media (max-width:640px) { .detail { grid-template-columns:1fr; } }
+  .detail table { width:100%; border-collapse:collapse; font-size:.92rem; }
+  .detail th { text-align:left; white-space:nowrap; padding:6px 14px 6px 0; vertical-align:top; font-weight:400; }
+  .detail td { padding:6px 0; color:var(--mute); border-bottom:1px solid var(--line); }
+  .detail tr:last-child td { border-bottom:0; }
 </style>
 <!-- リンクを貼ったときに出る紹介カード（OGP） -->
 <meta property="og:type" content="website">
@@ -41,92 +149,126 @@
 <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-<h1>PhotoParcel Select</h1>
-<p class="og-card"><img src="og.png" alt="PhotoParcel Selectの紹介" width="1200" height="630" style="display:block;width:100%;max-width:720px;height:auto;border-radius:12px;margin:12px 0 24px;"></p>
-<p>PhotoParcel Select（フォトパーセル セレクト）は、撮影した大量の RAW から採用カットを選び出す作業に特化した macOS / iPadOS / iOS アプリです。星の評価は XMP サイドカーとして書き出され、XMP に対応した現像ソフトにそのまま引き継げます。</p>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#"><img src="img/icon.png" alt="" width="28" height="28">PhotoParcel Select</a>
+  <nav aria-label="ページ内の移動"><a href="#features">特長</a><a href="#screens">画面</a><a href="#howto">使い方</a><a href="#faq">よくある質問</a><a href="#contact">お問い合わせ</a><a href="#en">English</a></nav>
+</div></header>
 
-<h2>使い方</h2>
-<ol>
+<main>
+<section class="hero"><div class="wrap">
+  <img class="icon" src="img/icon.png" alt="PhotoParcel Select のアイコン" width="112" height="112">
+  <h1>PhotoParcel Select</h1>
+  <p class="yomi">フォトパーセル セレクト</p>
+  <p class="sub">RAW のセレクトを、キー1つで。</p>
+  <p class="lead">撮影した大量の RAW から、残す1枚を選び出す作業に絞ったアプリです。JPEG の写真も同じようにセレクトできます。矢印で送って、1〜5 で星。星は RAW なら XMP に、JPEG なら写真の中に書き込むので、XMP に対応した現像ソフトにそのまま引き継げます。<span class="v15">JPEG は 1.5 から</span></p>
+  <ul class="chips"><li>Mac</li><li>iPhone</li><li>iPad</li><li>一度の購入で全部の端末に</li><li>通信なし・データの収集なし</li></ul>
+  <div class="btns">
+    <a class="btn primary" href="https://apps.apple.com/jp/app/id6800576249">App Store で見る</a>
+    <a class="btn ghost" href="#howto">使い方を見る</a>
+  </div>
+  <figure class="shot-hero" style="margin-left:auto;margin-right:auto;"><img src="img/mac-02.jpg" alt="Mac の PhotoParcel Select の1枚表示。下に前後のサムネイル、左下に星" width="1600" height="1000"></figure>
+  <p class="note"><a href="#en">English</a></p>
+</div></section>
+
+<section class="block alt" id="features"><div class="wrap">
+  <span class="eyebrow">FEATURES</span>
+  <h2>速く送って、迷わず決める</h2>
+  <p class="intro">何百枚もの中から、使う写真だけに星を付けていく。その繰り返しを、手を止めずに続けられるように作りました。</p>
+  <div class="grid">
+    <div class="card"><span class="ic" aria-hidden="true">⚡️</span><h3>RAW でも待たない</h3><p>RAW を現像せず、ファイルに埋め込まれたプレビューで表示するので、次々に送れます。等倍のときだけ、必要な範囲を現像します。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">⭐️</span><h3>キー1つで星、そのまま次へ</h3><p>1枚表示で 1〜5 を押すと星が付いて次の写真へ。0 で星を外して次へ。iPhone・iPad は星をタップ。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">🔁</span><h3>RAW も JPEG も、現像ソフトへ引き継ぐ</h3><p>星は自動で書き出し。RAW は隣の .xmp に記録し、写真ファイルには一切書き込みません。JPEG は写真の中に星だけを書き込みます<span class="v15">1.5 から</span>。キーワードや現像設定には触れません。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">🎞️</span><h3>前後を見比べながら</h3><p>1枚表示の下に前後のサムネイルが並ぶので、似た構図が何枚続くかを見ながら、どれを残すかを決められます。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">🔍</span><h3>等倍でピントを確かめる</h3><p>Space（iPhone・iPad はダブルタップかピンチ）で等倍。いちばんシャープな部分を小窓に等倍で出す機能も<span class="v15">1.5 から</span>。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">📱</span><h3>出先の iPad でも</h3><p>外付け SSD の写真も、ファイル App から見えるフォルダならそのままセレクト。帰ってから Mac の現像ソフトへ。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">#️⃣</span><h3>大量の中から1枚を探す</h3><p>並びの番号、100枚ごとの目盛り、番号を打って飛ぶ機能で、何百枚あっても目当ての1枚へ。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">🤝</span><h3>PhotoParcel と行き来</h3><p>Mac では姉妹アプリ PhotoParcel とボタン1つで行き来。コピー → セレクト → 現像 → 振り分けを一続きに。</p></div>
+  </div>
+</div></section>
+
+<section class="block" id="screens"><div class="wrap">
+  <span class="eyebrow">SCREENS</span>
+  <h2>画面</h2>
+  <p class="intro">横にすべらせると、ほかの画面も見られます。</p>
+  <p class="gallery-label">Mac</p>
+  <div class="gallery">
+    <figure><img src="img/mac-01.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>一覧。サムネイルに星と番号</figcaption></figure>
+    <figure><img src="img/mac-02.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>1枚表示。下に前後のサムネイル</figcaption></figure>
+    <figure><img src="img/mac-03.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>等倍でピントを確かめる</figcaption></figure>
+    <figure><img src="img/mac-04.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>複数を選んでまとめて星を付ける</figcaption></figure>
+  </div>
+  <p class="gallery-label">iPhone</p>
+  <div class="gallery phone">
+    <figure><img src="img/iphone-01.jpg" alt="" width="552" height="1200" loading="lazy"><figcaption>一覧</figcaption></figure>
+    <figure><img src="img/iphone-02.jpg" alt="" width="552" height="1200" loading="lazy"><figcaption>1枚表示</figcaption></figure>
+    <figure><img src="img/iphone-03.jpg" alt="" width="552" height="1200" loading="lazy"><figcaption>等倍</figcaption></figure>
+    <figure><img src="img/iphone-04.jpg" alt="" width="552" height="1200" loading="lazy"><figcaption>複数選択</figcaption></figure>
+  </div>
+</div></section>
+
+<section class="block alt" id="howto"><div class="wrap">
+  <span class="eyebrow">HOW TO</span>
+  <h2>使い方</h2>
+  <p class="intro">開いて、送って、星を付ける。</p>
+  <div class="how" style="grid-template-columns:1fr;max-width:780px;margin:0 auto 24px;">
+    <div class="card"><h3>はじめに</h3><ol>
   <li>「フォルダを開く」で、カメラからコピーした写真フォルダを選びます。</li>
   <li>矢印キー（iPad はタップとスワイプ）で写真を送りながら、<kbd>1</kbd>〜<kbd>5</kbd> で星を付けます。</li>
-  <li>星は自動で <code>写真名.xmp</code> として同じフォルダに書き出されます。</li>
+  <li>星は自動で書き出されます。RAW は <code>写真名.xmp</code> として同じフォルダに、JPEG は写真ファイルの中に記録します（JPEG は 1.5 から）。</li>
   <li>お使いの現像ソフトでそのフォルダを読み込むと、星が反映された状態で開きます。</li>
-</ol>
-<p>読み込み前に XMP を書き出しておくのが前提です。すでに読み込み済みのフォルダに後から書き出した場合は、現像ソフト側でメタデータを読み込み直す操作が必要になります。</p>
-
-<h3>キーボード操作（macOS / iPad + Magic Keyboard 共通）</h3>
-<table>
-  <tr><th>矢印</th><td>写真を送る（1枚表示では上下も1枚ずつ）</td></tr>
-  <tr><th>1〜5</th><td>星を付ける（1枚表示では、付けたあと次の写真に進みます）</td></tr>
-  <tr><th>0</th><td>星を消す（1枚表示では、そのまま次の写真に進みます）</td></tr>
-  <tr><th>Shift + 矢印</th><td>範囲を選択する</td></tr>
-  <tr><th>⌘A</th><td>すべて選択（⇧⌘A で解除）</td></tr>
-  <tr><th>⌘Z</th><td>星の変更を取り消す（⇧⌘Z でやり直し）</td></tr>
-  <tr><th>Return</th><td>一覧と1枚表示を切り替える</td></tr>
-  <tr><th>Space</th><td>等倍で表示（macOS は長押し、iPad は押すたび切り替え）。macOS はトラックパッドのピンチでも等倍にできます</td></tr>
-  <tr><th>Esc</th><td>一覧に戻る</td></tr>
-</table>
-
-<h3>iPad / iPhone でのタッチ操作</h3>
-<ul>
+</ol><p style="color:var(--mute);font-size:.9rem;margin:8px 0 0;">読み込み前に XMP を書き出しておくのが前提です。すでに読み込み済みのフォルダに後から書き出した場合は、現像ソフト側でメタデータを読み込み直す操作が必要になります。</p></div>
+  </div>
+  <div class="detail">
+    <div class="card"><h3>キーボード操作（macOS / iPad + Magic Keyboard 共通）</h3><table><tr><th><kbd>矢印</kbd></th><td>写真を送る（1枚表示では上下も1枚ずつ）</td></tr><tr><th><kbd>1〜5</kbd></th><td>星を付ける（1枚表示では、付けたあと次の写真に進みます）</td></tr><tr><th><kbd>0</kbd></th><td>星を消す（1枚表示では、そのまま次の写真に進みます）</td></tr><tr><th><kbd>Shift + 矢印</kbd></th><td>範囲を選択する</td></tr><tr><th><kbd>⌘A</kbd></th><td>すべて選択（⇧⌘A で解除）</td></tr><tr><th><kbd>⌘Z</kbd></th><td>星の変更を取り消す（⇧⌘Z でやり直し）</td></tr><tr><th><kbd>Return</kbd></th><td>一覧と1枚表示を切り替える</td></tr><tr><th><kbd>Space</kbd></th><td>等倍で表示（macOS は長押し、iPad は押すたび切り替え）。macOS はトラックパッドのピンチでも等倍にできます</td></tr><tr><th><kbd>Esc</kbd></th><td>一覧に戻る</td></tr></table></div>
+    <div class="card"><h3>iPad / iPhone でのタッチ操作</h3><ul>
   <li>写真をタップして選択、もう一度タップで1枚表示</li>
   <li>1枚表示では左右スワイプで送り、下スワイプで一覧に戻る</li>
   <li>星をタップすると、その評価が入って次の写真に進みます</li>
   <li>ダブルタップ、または2本指を広げるピンチで等倍。指を広げた場所が等倍の中心になります。そのままドラッグして見たい場所へ動かせます</li>
   <li>長押し、または右上のチェックマークで複数選択に入ります</li>
-</ul>
-
-<h3>1枚表示の見かた</h3>
-<ul>
+</ul></div>
+    <div class="card"><h3>1枚表示の見かた</h3><ul>
   <li>画面の下に前後のサムネイルが並びます。似た構図が何枚続いているかを見ながら、その中のどれに星を付けるかを決められます。すでに付けた星も表示されます</li>
   <li>サムネイルを押すと、その写真が表示されます。iPad / iPhone では、サムネイルの帯を左右になぞって前後を見渡せます</li>
   <li>右上に、いま何枚目を見ているか、星を付けた枚数、その割合が出ます</li>
+  <li>写真の左端の「等倍」ボタンをオンにすると、写真の中でいちばんシャープな部分を右下の小窓に等倍で表示します。すべての写真を等倍にしなくても、微ブレやピントの外れに気づけます。写真を押すと、その場所を小窓で確かめられます（初めはオフです） <span class="v15">1.5 から</span></li>
   <li>星は行の左端に並びます。その左にある「星なし」を押すと、星を外して次の写真に進みます</li>
   <li>右下のボタンは、左から「一覧」（一覧に戻る）、「戻る」（1枚戻る）、「次へ」（星を変えずに次へ）です</li>
-</ul>
-
-<h3>たくさんの写真から目当ての1枚を探す</h3>
-<ul>
+</ul></div>
+    <div class="card"><h3>たくさんの写真から目当ての1枚を探す</h3><ul>
   <li>サムネイルの右上に、並びの中で何番目かが出ます</li>
   <li>101枚以上あるときは、一覧の右端に 100枚単位の目盛りが出ます。押すとその位置までスクロールします（選んでいる写真は変わりません）</li>
   <li>番号を打ってその写真へ飛べます。macOS は上のツールバーの番号入力欄、iPad / iPhone は「#」のボタンです</li>
-</ul>
+</ul></div>
+  </div>
+</div></section>
 
-<h2>よくある質問</h2>
-<dl>
-  <dt>Q. どの RAW 形式に対応していますか？</dt>
-  <dd>A. macOS / iPadOS が対応している形式を読み込めます（Canon CR3・Sony ARW・Nikon NEF など）。OS が知らない機種の RAW は読み込めず、サムネイルに「読み込めません」と表示されます。</dd>
+<section class="block" id="faq"><div class="wrap">
+  <span class="eyebrow">FAQ</span>
+  <h2>よくある質問</h2>
+  <div class="faq">
+    <details><summary>どの RAW 形式に対応していますか？</summary><div class="a"><p>macOS / iPadOS が対応している形式を読み込めます（Canon CR3・Sony ARW・Nikon NEF など）。OS が知らない機種の RAW は読み込めず、サムネイルに「読み込めません」と表示されます。</p></div></details>
+    <details><summary>表示が速いのはなぜですか？</summary><div class="a"><p>RAW の現像を行わず、ファイルに埋め込まれたプレビュー画像を使っているためです。等倍表示のときだけ、必要に応じて画面に映る範囲を現像します。</p></div></details>
+    <details><summary>等倍表示が実際の画素数より小さいことがあります</summary><div class="a"><p>埋め込みプレビューの大きさは機種によって異なります。プレビューが実サイズに足りない場合（Sony ARW など）は自動で RAW 現像に切り替わり、情報バーに「RAW現像」と表示されます。</p></div></details>
+    <details><summary>写真が書き換えられることはありませんか？</summary><div class="a"><p>RAW の写真ファイルには一切書き込みません。星は隣に置く <code>.xmp</code> ファイルに記録します。JPEG だけは（1.5 から）、現像ソフトが隣の <code>.xmp</code> を読まないため、星を写真ファイルの中に書き込みます。書き換えるのは星の情報だけで、画像そのものや撮影情報には触れません。すでに XMP がある場合も評価の箇所だけを書き換え、キーワードや現像設定には触れません。</p></div></details>
+    <details><summary>現像設定は引き継げますか？</summary><div class="a"><p>引き継げるのは星の評価だけです。現像設定（crs 情報）は意図的に書き出していません。現像ソフト側で誤って解釈される恐れがあるためです。</p></div></details>
+    <details><summary>iPad で外付け SSD の写真をセレクトできますか？</summary><div class="a"><p>できます。ファイル App から見えるフォルダであれば選択でき、XMP もそのフォルダに書き出されます。移動中に iPad でセレクトを終えて、帰宅後に Mac の現像ソフトへ、という使い方を想定しています。</p></div></details>
+    <details><summary>PhotoParcel との連携とは？</summary><div class="a"><p>macOS 版では、姉妹アプリ <a href="https://apps.apple.com/jp/app/photoparcel/id6797479444">PhotoParcel</a> がインストールされていると、ツールバーに受け渡しボタンが表示されます。コピー → セレクト → 現像 → 振り分け、という一連の流れを行き来できます。</p></div></details>
+    <details><summary>途中でアプリを閉じたら、どこまで見たか分からなくなりませんか？ <span class="v15">1.5 から</span></summary><div class="a"><p>フォルダごとに、最後に星を付けた写真を覚えています。アプリを終了したり、フォルダを開き直したりしても、その写真が選ばれた状態から始まります。「星なし」で確定した写真も、そこまで見た位置として覚えます。</p></div></details>
+    <details><summary>サブフォルダの中も表示されますか？</summary><div class="a"><p>選んだフォルダの直下のみを表示します。カメラから1回分をコピーしたフォルダを開く使い方を想定しています。</p></div></details>
+  </div>
+</div></section>
 
-  <dt>Q. 表示が速いのはなぜですか？</dt>
-  <dd>A. RAW の現像を行わず、ファイルに埋め込まれたプレビュー画像を使っているためです。等倍表示のときだけ、必要に応じて画面に映る範囲を現像します。</dd>
-
-  <dt>Q. 等倍表示が実際の画素数より小さいことがあります</dt>
-  <dd>A. 埋め込みプレビューの大きさは機種によって異なります。プレビューが実サイズに足りない場合（Sony ARW など）は自動で RAW 現像に切り替わり、情報バーに「RAW現像」と表示されます。</dd>
-
-  <dt>Q. 写真が書き換えられることはありませんか？</dt>
-  <dd>A. 元の写真ファイルには一切書き込みません。星は隣に置く <code>.xmp</code> ファイルにのみ記録します。すでに XMP がある場合は評価の箇所だけを書き換え、キーワードや現像設定には触れません。</dd>
-
-  <dt>Q. 現像設定は引き継げますか？</dt>
-  <dd>A. 引き継げるのは星の評価だけです。現像設定（crs 情報）は意図的に書き出していません。現像ソフト側で誤って解釈される恐れがあるためです。</dd>
-
-  <dt>Q. iPad で外付け SSD の写真をセレクトできますか？</dt>
-  <dd>A. できます。ファイル App から見えるフォルダであれば選択でき、XMP もそのフォルダに書き出されます。移動中に iPad でセレクトを終えて、帰宅後に Mac の現像ソフトへ、という使い方を想定しています。</dd>
-
-  <dt>Q. PhotoParcel との連携とは？</dt>
-  <dd>A. macOS 版では、姉妹アプリ <a href="https://apps.apple.com/jp/app/photoparcel/id6797479444">PhotoParcel</a> がインストールされていると、ツールバーに受け渡しボタンが表示されます。コピー → セレクト → 現像 → 振り分け、という一連の流れを行き来できます。</dd>
-
-  <dt>Q. 途中でアプリを閉じたら、どこまで見たか分からなくなりませんか？</dt>
-  <dd>A. フォルダごとに、最後に星を付けた写真を覚えています。アプリを終了したり、フォルダを開き直したりしても、その写真が選ばれた状態から始まります。「星なし」で確定した写真も、そこまで見た位置として覚えます。</dd>
-
-  <dt>Q. サブフォルダの中も表示されますか？</dt>
-  <dd>A. 選んだフォルダの直下のみを表示します。カメラから1回分をコピーしたフォルダを開く使い方を想定しています。</dd>
-</dl>
-
-<h2>お問い合わせ</h2>
-<p>不具合のご報告・ご要望は、以下のメールアドレスまでお気軽にご連絡ください。</p>
-<p><a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
-
-<p><a href="privacy.html">プライバシーポリシー</a></p>
+<section class="block alt" id="contact"><div class="wrap contact">
+  <span class="eyebrow">CONTACT</span>
+  <h2>お問い合わせ</h2>
+  <div class="card">
+    <p>不具合のご報告やご要望は、メールでお気軽にどうぞ。</p>
+    <p><a class="btn ghost" href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
+    <p style="font-size:.9rem;color:var(--mute);margin:14px 0 0;">PhotoParcel Select は外部と通信せず、データを集めません。くわしくは <a href="privacy.html">プライバシーポリシー</a> をご覧ください。</p>
+  </div>
+</div></section>
+</main>
 
 <!-- この作者のほかのアプリ（ここから） -->
 <section class="other-apps" style="margin-top:3rem;">
@@ -148,6 +290,61 @@
 </ul>
 </section>
 <!-- この作者のほかのアプリ（ここまで） -->
+<hr id="en" class="en-sep">
+<section lang="en" class="en"><div class="wrap">
+  <section class="block" style="padding-bottom:24px;">
+    <span class="eyebrow">ENGLISH</span>
+    <h2>PhotoParcel Select Support</h2>
+    <div class="intro" style="max-width:44em;"><p>PhotoParcel Select is an app for macOS, iPadOS and iOS made for one job: picking the keepers from the hundreds of RAW files you bring home from a shoot. Star ratings are saved as XMP, so they carry over to any photo editor that reads XMP.</p><p style="font-size:.88rem;">English is available from version 1.5.</p></div>
+    <div class="btns" style="margin-top:0;"><a class="btn primary" href="https://apps.apple.com/us/app/id6800576249">View on the App Store</a></div>
+  </section>
+  <div class="how" style="grid-template-columns:1fr;max-width:780px;margin:0 auto 24px;"><div class="card"><h3>How to use</h3><ol>
+  <li>Click "Open Folder" and choose a folder of photos copied from your camera.</li>
+  <li>Move through the photos with the arrow keys (tap and swipe on iPad and iPhone) and press <kbd>1</kbd> to <kbd>5</kbd> to rate.</li>
+  <li>Ratings are saved automatically. For RAW files they are saved as <code>photo name.xmp</code> in the same folder; for JPEG files they are written inside the photo file (JPEG: version 1.5 and later).</li>
+  <li>Import the folder into your photo editor, and the ratings are already there.</li>
+</ol><p style="color:var(--mute);font-size:.9rem;margin:8px 0 0;">Save the ratings before importing the folder. If the folder was already imported, your photo editor may need to read the metadata from the files again.</p></div></div>
+  <div class="detail">
+    <div class="card"><h3>Keyboard (macOS, and iPad with a hardware keyboard)</h3><table><tr><th><kbd>Arrow keys</kbd></th><td>Move between photos (in the single-photo view, up and down also move one photo)</td></tr><tr><th><kbd>1 to 5</kbd></th><td>Set a star rating (in the single-photo view, the next photo appears after you rate)</td></tr><tr><th><kbd>0</kbd></th><td>Clear the rating (in the single-photo view, moves to the next photo)</td></tr><tr><th><kbd>Shift + arrow keys</kbd></th><td>Select a range</td></tr><tr><th><kbd>Command + A</kbd></th><td>Select all (Shift + Command + A to deselect)</td></tr><tr><th><kbd>Command + Z</kbd></th><td>Undo a rating change (Shift + Command + Z to redo)</td></tr><tr><th><kbd>Return</kbd></th><td>Switch between the grid and the single-photo view</td></tr><tr><th><kbd>Space</kbd></th><td>100% view (on macOS, hold the key; on iPad, press to toggle). On macOS you can also pinch on the trackpad</td></tr><tr><th><kbd>Esc</kbd></th><td>Back to the grid</td></tr></table></div>
+    <div class="card"><h3>Touch (iPad and iPhone)</h3><ul>
+  <li>Tap a photo to select it, tap again to open the single-photo view</li>
+  <li>In the single-photo view, swipe left or right to move, and swipe down to return to the grid</li>
+  <li>Tap a star to rate and move to the next photo</li>
+  <li>Double-tap or pinch out for 100% view. The spot under your fingers becomes the center. Drag to look around</li>
+  <li>Touch and hold, or tap the check mark at the top right, to select multiple photos</li>
+</ul></div>
+    <div class="card"><h3>The single-photo view</h3><ul>
+  <li>Thumbnails of the photos before and after the current one run along the bottom, with their ratings. Click or tap one to jump to it. On iPad and iPhone you can swipe the strip to look ahead</li>
+  <li>The top right shows which photo you are on, how many photos are rated, and the percentage</li>
+  <li>Turn on the 100% button at the left edge of the photo to show the sharpest part of the photo at 100% in a small window at the bottom right. You can spot slight blur or missed focus without zooming into every photo. Click or tap the photo to check a different spot (off by default) <span class="v15">Version 1.5+</span></li>
+  <li>The stars are at the left of the bar. The button to their left clears the rating and moves to the next photo</li>
+  <li>The buttons at the bottom right are Grid (back to the grid), Back (previous photo) and Next (next photo without changing the rating)</li>
+</ul></div>
+    <div class="card"><h3>Finding a photo in a large folder</h3><ul>
+  <li>Each thumbnail shows its position number at the top right</li>
+  <li>With more than 100 photos, a scale marked every 100 photos appears at the right edge of the grid. Click or tap a mark to scroll there (the selected photo does not change)</li>
+  <li>To go to a photo by number, use the number field in the toolbar on macOS, or the "#" button on iPad and iPhone</li>
+</ul></div>
+  </div>
+  <h2 style="margin-top:48px;">FAQ</h2>
+  <div class="faq">
+    <details><summary>Which RAW formats are supported?</summary><div class="a"><p>The formats supported by macOS and iPadOS (Canon CR3, Sony ARW, Nikon NEF and more). RAW files from cameras the system does not know cannot be opened and are marked "Can't load" in the grid.</p></div></details>
+    <details><summary>Why is it so fast?</summary><div class="a"><p>It shows the preview images embedded in each RAW file instead of developing the RAW data. Only in the 100% view is the visible area developed from the RAW data when needed.</p></div></details>
+    <details><summary>Sometimes the 100% view is smaller than the actual pixel count</summary><div class="a"><p>The size of the embedded preview depends on the camera. When the preview is smaller than the full image (for example Sony ARW), the app develops the RAW data instead, and the info bar shows "RAW developed".</p></div></details>
+    <details><summary>Does the app change my photos?</summary><div class="a"><p>RAW files are never written to. Ratings are saved in a <code>.xmp</code> file next to each photo. For JPEG files only (version 1.5 and later), the rating is written inside the photo file, because photo editors do not read <code>.xmp</code> sidecar files for JPEG. Only the rating is changed; the image and the shooting information are left as they are. If an XMP file already exists, only the rating is updated, and keywords and develop settings are left untouched.</p></div></details>
+    <details><summary>Are develop settings carried over?</summary><div class="a"><p>Only the star ratings are carried over. Develop settings are intentionally not written, so your photo editor will not misread them.</p></div></details>
+    <details><summary>Can I cull photos on an external SSD with my iPad?</summary><div class="a"><p>Yes. Any folder you can see in the Files app can be opened, and the XMP files are saved in that folder. You can finish culling on your iPad on the go and import the folder into your editor on the Mac later.</p></div></details>
+    <details><summary>What does "works with PhotoParcel" mean?</summary><div class="a"><p>On macOS, if <a href="https://apps.apple.com/app/photoparcel/id6797479444">PhotoParcel</a> by the same developer is installed, a button appears in the toolbar to hand the current folder over to it.</p></div></details>
+    <details><summary>If I close the app partway through, will I lose my place? <span class="v15">Version 1.5+</span></summary><div class="a"><p>The app remembers the last photo you rated in each folder. When you quit the app or reopen the folder, that photo is selected again. Photos you confirmed with no rating count as well.</p></div></details>
+    <details><summary>Are photos in subfolders shown?</summary><div class="a"><p>Only the photos directly inside the chosen folder are shown. The app is designed for a folder holding one shoot copied from your camera.</p></div></details>
+  </div>
+  <div class="contact" style="margin-top:40px;"><div class="card">
+<p>For bug reports and requests, please email <a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a>.</p>
+
+<p><a href="privacy.html#en">Privacy Policy</a></p>
+</div></div>
+</div></section>
+
 <footer>© 2026 Hideki Sato — PhotoParcel Select</footer>
 </body>
 </html>
